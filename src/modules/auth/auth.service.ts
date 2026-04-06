@@ -1,9 +1,9 @@
 import ApiError from "../../common/utils/api-error.js"
-import { generateAccessToken, generateHash, generateRefreshToken } from "../../common/utils/jwt-utils.js"
+import { generateAccessToken, generateHash, generateRefreshToken, verifyRefreshToken } from "../../common/utils/jwt-utils.js"
 import prisma from "../../config/prisma.js"
 
 const register = async ({name, email, password}: {name: string, email: string, password: string}) => {
-    const existing = await prisma.user.findFirst({
+    const existing = await prisma.user.findUnique({
         where: {
             email: email as string
         }
@@ -22,14 +22,14 @@ const register = async ({name, email, password}: {name: string, email: string, p
             password: hashedPassword
             // add verification token later
         },
-        omit: {password: true}
+        omit: {password: true, refreshToken: true}
     })
 
     return newUser
 }
 
 const login = async ({email, password}: {email: string, password: string}) => {
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
         where: {
             email: email as string
         },
@@ -65,7 +65,50 @@ const login = async ({email, password}: {email: string, password: string}) => {
     }
 }
 
+const refresh = async ({refreshToken}: {refreshToken: string}) => {
+    if(!refreshToken) throw ApiError.unauthorized('Refresh token missing')
+
+    const decoded = await verifyRefreshToken(refreshToken) as {id: string}
+
+    if(!decoded) throw ApiError.unauthorized('Invalid refresh token')
+
+    const user = await prisma.user.findUnique({
+        where: {
+            id: decoded.id
+        },
+        omit: {password: true}
+    })
+
+    if(!user) throw ApiError.notFound('User not found')
+
+    const userHashedToken = await generateHash(refreshToken)
+    const isMatch = user?.refreshToken === userHashedToken
+
+    if(!isMatch) throw ApiError.unauthorized('Invalid refresh token')
+
+    const newAccessToken = generateAccessToken({id: user?.id, role: user?.role})
+    const newRefreshToken = generateRefreshToken({id: user?.id})
+    const newHashedRefreshToken = await generateHash(newRefreshToken)
+
+    const updatedUser = await prisma.user.update({
+        where:{
+            id: user.id
+        },
+        data:{
+            refreshToken: newHashedRefreshToken
+        },
+        omit: {password: true, refreshToken: true}
+    })
+
+    return {
+        user: updatedUser,
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken
+    }
+}
+
 export {
     register,
-    login
+    login,
+    refresh
 }

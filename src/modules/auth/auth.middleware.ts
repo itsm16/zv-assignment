@@ -31,10 +31,10 @@ const checkToken = async (req: Request & {user?: any}, res: Response, next: Next
     next()
 }
 
-const checkRole = async(roles : string[]) => {
+const checkRole = (roles : string[]) => {
     roles = roles.map(ele => ele.toLowerCase())
 
-    return async (req: Request & {user?: any}, res: Response, next: NextFunction) =>{
+    return (req: Request & {user?: any}, res: Response, next: NextFunction) =>{
 
     const user = req.user
     if(!user) throw ApiError.unauthorized("User not found")

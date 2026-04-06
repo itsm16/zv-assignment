@@ -16,4 +16,10 @@ class loginDto extends BaseDto {
     })
 }
 
-export {registerDto, loginDto}
+class refreshDto extends BaseDto {
+    static schema = z.object({
+        refreshToken: z.string().nonempty({error: 'Refresh token is required'}),
+    })
+}
+
+export {registerDto, loginDto, refreshDto}

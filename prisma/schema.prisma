@@ -28,5 +28,26 @@ model User {
   isActive  Boolean @default(true)
 
   refreshToken String? @map("refresh_token")
+
+  records financialRecords[]
+
   // @@map("users") // Maps to 'users' table
 }
+
+enum record_type {
+  INCOME
+  EXPENSE
+}
+
+model financialRecords{
+  id  String @id @default(uuid())
+  amount  Float
+  type  record_type @default(EXPENSE)
+  userId String @map("user_id")
+  user User @relation(fields: [userId], references: [id])
+  note String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("records")
+}
+

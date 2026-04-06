@@ -1,6 +1,4 @@
 User and Role Management
-- Register
-- Login / out
 
 Financial Records CRUD
 
@@ -14,6 +12,19 @@ Input Validation and Error Handling
 
 Data Persistence (Database)
 
+<!-- todo -------- -->
+<!-- 
+
+ - complete the users module - status / role / delete user etc
+ - roles (middleware) in records crud / check records crud
+ - add filter to records get
+        - can add pagination
+ - try soft delete - deletedAt
+ - dashboard apis
+
+
+
+ -->
 
 ---
 
@@ -22,16 +33,18 @@ Provide a way to manage users and their access levels within the system.
 
 Your backend should support:
 
-Creating and managing users
-Assigning roles to users - route
-Managing user status such as active or inactive - route
-Restricting actions based on roles
+Creating and managing users     ----
+Assigning roles to users     ----
+Managing user status such as active or inactive     ----
+- Restricting actions based on roles
 You may define roles such as:
 
 Viewer: Can only view dashboard data
 Analyst: Can view records and access insights
 Admin: Can create, update, and manage records and users
 The exact role model is up to you, but role based behavior should be clear in your implementation.
+
+---
 
 2. Financial Records Management
 Create backend support for financial data such as transactions or entries.
@@ -50,6 +63,9 @@ Viewing records
 Updating records
 Deleting records
 Filtering records based on criteria such as date, category, or type
+
+---
+
 3. Dashboard Summary APIs
 Provide APIs or backend logic that can return summary level data for a dashboard.
 
@@ -61,7 +77,9 @@ Net balance
 Category wise totals
 Recent activity
 Monthly or weekly trends
-The purpose here is to show how you design backend endpoints or service logic for aggregated data, not just basic CRUD operations.
+The purpose here is to show how you design backend endpoints or service logic for aggregated data, not just basic CRUD operations
+
+---
 
 4. Access Control Logic
 Implement backend level access control for different roles.
@@ -69,9 +87,11 @@ Implement backend level access control for different roles.
 The system should clearly enforce which type of user can perform which action. For example:
 
 A viewer should not be able to create or modify records
-An analyst may be allowed to read records and access summaries
+An analyst may be allowed to read records and access summaries --> allow dashboard apis
 An admin may be allowed full management access
 You may implement this using middleware, guards, decorators, policy checks, or any equivalent method depending on the framework you choose.
+
+---
 
 5. Validation and Error Handling
 Your backend should demonstrate proper handling of incorrect or incomplete input.
@@ -84,6 +104,8 @@ Status codes used appropriately
 Protection against invalid operations
 The goal is not perfection, but your implementation should show that you understand how a backend should behave in real usage.
 
+---
+
 6. Data Persistence
 Use a persistence approach suitable for your project.
 
@@ -94,3 +116,10 @@ A document database
 SQLite for simplicity
 Any other reasonable option
 If you choose a simplified or mock storage approach, mention it clearly in your documentation.
+
+
+---
+
+cleanup
+
+- clear test routes

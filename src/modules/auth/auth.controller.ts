@@ -9,10 +9,16 @@ const register = async (req: Request, res: Response) => {
 
 const login = async (req: Request, res: Response) => {
     const user = await authService.login(req.body)
-    ApiResponse.created(res, 'User logged in', user)
+    ApiResponse.ok(res, 'User logged in', user)
+}
+
+const refresh = async (req: Request, res: Response) => {
+    const user = await authService.refresh(req.body)
+    ApiResponse.ok(res, 'Tokens refreshed', user)
 }
 
 export {
     register,
-    login
+    login,
+    refresh
 }
